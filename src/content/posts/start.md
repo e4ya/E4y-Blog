@@ -6,7 +6,7 @@ image: ''
 tags: [Fuwari]
 category: '代码相关'
 draft: false 
-lang: 'zh'
+lang: 'zh-cn'
 ---
 拥有属于自己的博客了awa
 
