@@ -127,6 +127,188 @@
     .btn-regular-dark.success {
         @apply bg-[oklch(0.75_0.14_var(--hue))] dark:bg-[oklch(0.75_0.14_var(--hue))]
     }
+
+    /* ========================================
+       Display Settings Panel Components
+       ======================================== */
+    
+    /* Setting Section Title */
+    .setting-section-title {
+        @apply flex gap-2 font-bold text-lg text-neutral-900 dark:text-neutral-100 
+               relative ml-3;
+    }
+    
+    .setting-section-title::before {
+        content: "";
+        @apply w-1 h-4 rounded-md bg-[var(--primary)] 
+               absolute -left-3 top-[0.33rem];
+    }
+    
+    /* Toggle Switch */
+    .toggle-switch {
+        @apply relative w-12 h-6 rounded-full transition-colors duration-200 ease-in-out;
+        cursor: pointer;
+    }
+    
+    .toggle-switch.checked {
+        @apply bg-[var(--primary)];
+    }
+    
+    .toggle-switch.unchecked {
+        @apply bg-[var(--btn-regular-bg)];
+    }
+    
+    .toggle-switch-knob {
+        @apply absolute left-1 top-1 w-4 h-4 rounded-full bg-white 
+               transition-transform duration-200 ease-out;
+    }
+    
+    .toggle-switch-knob.checked {
+        transform: translateX(1.5rem);
+    }
+    
+    .toggle-switch:active .toggle-switch-knob {
+        @apply scale-90;
+    }
+    
+    /* Slider Base */
+    .slider-base {
+        @apply w-full rounded-lg appearance-none cursor-pointer
+               transition-all duration-150;
+    }
+    
+    .slider-base:disabled {
+        @apply opacity-50 cursor-not-allowed;
+    }
+    
+    /* Slider Thumb - Unified Style */
+    .slider-base::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        @apply h-4 w-2 rounded-sm bg-white/70 
+               hover:bg-white/80 active:bg-white/60
+               transition-all duration-150;
+    }
+    
+    .slider-base::-webkit-slider-thumb:hover {
+        transform: scale(1.1);
+    }
+    
+    .slider-base::-webkit-slider-thumb:active {
+        transform: scale(0.95);
+    }
+    
+    .slider-base::-moz-range-thumb {
+        @apply h-4 w-2 rounded-sm bg-white/70 border-0
+               hover:bg-white/80 active:bg-white/60
+               transition-all duration-150;
+    }
+    
+    .slider-base::-moz-range-thumb:hover {
+        transform: scale(1.1);
+    }
+    
+    .slider-base::-moz-range-thumb:active {
+        transform: scale(0.95);
+    }
+    
+    /* Color Slider (with rainbow gradient) */
+    .slider-color {
+        @apply h-6 px-1 rounded select-none;
+        background-image: var(--color-selection-bar);
+    }
+    
+    /* Default Slider (solid background) */
+    .slider-default {
+        @apply h-6 px-1 bg-[var(--btn-regular-bg)];
+    }
+    
+    /* Value Badge */
+    .setting-value-badge {
+        @apply transition-all duration-200 bg-[var(--btn-regular-bg)] 
+               w-10 h-7 rounded-md 
+               flex justify-center font-bold text-sm items-center 
+               text-[var(--btn-content)];
+    }
+    
+    .setting-value-badge.updating {
+        animation: badge-pulse 0.2s ease-in-out;
+    }
+    
+    @keyframes badge-pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
+    
+    /* Reset Button */
+    .setting-reset-btn {
+        @apply btn-regular w-7 h-7 rounded-md active:scale-90 
+               will-change-transform transition-all duration-200;
+    }
+    
+    .setting-reset-btn.hidden {
+        @apply opacity-0 pointer-events-none;
+    }
+    
+    .setting-reset-btn:not(.hidden) {
+        animation: reset-btn-enter 0.3s ease-out;
+    }
+    
+    @keyframes reset-btn-enter {
+        from {
+            opacity: 0;
+            transform: rotate(-90deg) scale(0.8);
+        }
+        to {
+            opacity: 1;
+            transform: rotate(0) scale(1);
+        }
+    }
+    
+    .setting-reset-btn.small {
+        @apply w-6 h-6;
+    }
+    
+    .setting-reset-btn.small svg {
+        @apply text-[0.75rem];
+    }
+    
+    /* Expandable Section */
+    .setting-expand-wrapper {
+        @apply overflow-hidden;
+    }
+    
+    .setting-expand-content {
+        @apply transition-all duration-300 ease-in-out;
+        max-height: 0;
+        opacity: 0;
+        padding-top: 0;
+    }
+    
+    .setting-expand-content.expanded {
+        max-height: 500px;
+        opacity: 1;
+        padding-top: 0.75rem;
+    }
+    
+    /* Chevron Rotation */
+    .setting-chevron {
+        @apply text-[1.25rem] transition-transform duration-300;
+    }
+    
+    .setting-chevron.expanded {
+        transform: rotate(90deg);
+    }
+    
+    /* Float Panel Enhanced Animation */
+    .float-panel {
+        transform-origin: top right;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .float-panel-closed {
+        @apply -translate-y-2 opacity-0 pointer-events-none scale-95;
+    }
 }
 
 .custom-md img, #post-cover img {

@@ -14,6 +14,10 @@ import {
 import { onMount } from "svelte";
 import type { LIGHT_DARK_MODE } from "@/types/config.ts";
 
+import SettingSection from "./settings/SettingSection.svelte";
+import ToggleSwitch from "./settings/ToggleSwitch.svelte";
+import ValueBadge from "./settings/ValueBadge.svelte";
+
 interface Props {
 	class?: string;
 }
@@ -43,7 +47,7 @@ onMount(() => {
 });
 
 function resetHue() {
-	hue = 315;
+	hue = defaultHue;
 }
 
 $effect(() => {
@@ -57,12 +61,10 @@ function switchTheme(newMode: LIGHT_DARK_MODE) {
 	setTheme(newMode);
 }
 
-// Background settings
 let backgroundEnabled = $state(true);
 let backgroundBlur = $state(10);
 let backgroundSettingsExpanded = $state(false);
 
-// Card opacity settings
 let cardOpacityEnabled = $state(true);
 let cardOpacityLight = $state(65);
 let cardOpacityDark = $state(85);
@@ -81,7 +83,6 @@ onMount(() => {
 		backgroundBlur = Number.parseInt(storedBgBlur, 10);
 	}
 
-	// Load card opacity settings
 	const storedCardOpacityEnabled = localStorage.getItem("card-opacity-enabled");
 	const storedCardOpacityLight = localStorage.getItem("card-opacity-light");
 	const storedCardOpacityDark = localStorage.getItem("card-opacity-dark");
@@ -105,8 +106,9 @@ function toggleBackground() {
 	applyBackgroundSettings();
 }
 
-function updateBackgroundBlur() {
-	localStorage.setItem("background-blur", String(backgroundBlur));
+function updateBackgroundBlur(value: number) {
+	backgroundBlur = value;
+	localStorage.setItem("background-blur", String(value));
 	applyBackgroundSettings();
 }
 
@@ -120,7 +122,6 @@ function toggleCardOpacity() {
 	cardOpacityEnabled = !cardOpacityEnabled;
 	localStorage.setItem("card-opacity-enabled", String(cardOpacityEnabled));
 	if (!cardOpacityEnabled) {
-		// 关闭时保存当前值，并设为 100%
 		cardOpacityLightPrev = cardOpacityLight;
 		cardOpacityDarkPrev = cardOpacityDark;
 		cardOpacityLight = 100;
@@ -128,7 +129,6 @@ function toggleCardOpacity() {
 		localStorage.setItem("card-opacity-light", "100");
 		localStorage.setItem("card-opacity-dark", "100");
 	} else {
-		// 重新启用时恢复默认值
 		cardOpacityLight = 65;
 		cardOpacityDark = 85;
 		cardOpacityLightPrev = 65;
@@ -139,13 +139,15 @@ function toggleCardOpacity() {
 	applyCardOpacitySettings();
 }
 
-function updateCardOpacityLight() {
-	localStorage.setItem("card-opacity-light", String(cardOpacityLight));
+function updateCardOpacityLight(value: number) {
+	cardOpacityLight = value;
+	localStorage.setItem("card-opacity-light", String(value));
 	applyCardOpacitySettings();
 }
 
-function updateCardOpacityDark() {
-	localStorage.setItem("card-opacity-dark", String(cardOpacityDark));
+function updateCardOpacityDark(value: number) {
+	cardOpacityDark = value;
+	localStorage.setItem("card-opacity-dark", String(value));
 	applyCardOpacitySettings();
 }
 
@@ -171,19 +173,11 @@ function resetCardOpacityDark() {
 
 function applyCardOpacitySettings() {
 	const html = document.documentElement;
-	if (cardOpacityEnabled) {
-		html.style.setProperty(
-			"--card-opacity-light",
-			String(cardOpacityLight / 100),
-		);
-		html.style.setProperty(
-			"--card-opacity-dark",
-			String(cardOpacityDark / 100),
-		);
-	} else {
-		html.style.setProperty("--card-opacity-light", "0.65");
-		html.style.setProperty("--card-opacity-dark", "0.85");
-	}
+	html.style.setProperty(
+		"--card-opacity-light",
+		String(cardOpacityLight / 100),
+	);
+	html.style.setProperty("--card-opacity-dark", String(cardOpacityDark / 100));
 }
 
 function applyBackgroundSettings() {
@@ -197,260 +191,214 @@ function applyBackgroundSettings() {
 }
 </script>
 
-<div id="display-setting" class="float-panel float-panel-closed absolute transition-all w-80 right-4 px-4 py-4">
-	<!-- Theme Settings Section -->
-	<div class="flex flex-row gap-2 mb-3 items-center justify-between">
-		<div class="flex gap-2 font-bold text-lg text-neutral-900 dark:text-neutral-100 transition relative ml-3
-			before:w-1 before:h-4 before:rounded-md before:bg-[var(--primary)]
-			before:absolute before:-left-3 before:top-[0.33rem]">
-			主题设置
-		</div>
-	</div>
-	
+<div
+	id="display-setting"
+	class="float-panel float-panel-closed absolute w-80 max-w-[calc(100vw-2rem)] right-4 px-4 py-4"
+>
+	<SettingSection title="主题设置" />
+
 	<div class="card-base p-3 mb-4">
-		<!-- Theme Mode -->
 		<div class="flex gap-2 mb-4">
-			<button aria-label={i18n(I18nKey.lightMode)} class="flex-1 btn-plain scale-animation rounded-lg h-11 active:scale-95"
-					class:current-theme-btn={mode === LIGHT_MODE}
-					onclick={() => switchTheme(LIGHT_MODE)}>
-				<Icon icon="material-symbols:wb-sunny-outline-rounded" class="text-[1.5rem]"></Icon>
+			<button
+				aria-label={i18n(I18nKey.lightMode)}
+				class="flex-1 btn-plain scale-animation rounded-lg h-11 active:scale-95"
+				class:current-theme-btn={mode === LIGHT_MODE}
+				onclick={() => switchTheme(LIGHT_MODE)}
+			>
+				<Icon icon="material-symbols:wb-sunny-outline-rounded" class="text-[1.5rem]" />
 			</button>
-			<button aria-label={i18n(I18nKey.darkMode)} class="flex-1 btn-plain scale-animation rounded-lg h-11 active:scale-95"
-					class:current-theme-btn={mode === DARK_MODE}
-					onclick={() => switchTheme(DARK_MODE)}>
-				<Icon icon="material-symbols:dark-mode-outline-rounded" class="text-[1.5rem]"></Icon>
+			<button
+				aria-label={i18n(I18nKey.darkMode)}
+				class="flex-1 btn-plain scale-animation rounded-lg h-11 active:scale-95"
+				class:current-theme-btn={mode === DARK_MODE}
+				onclick={() => switchTheme(DARK_MODE)}
+			>
+				<Icon icon="material-symbols:dark-mode-outline-rounded" class="text-[1.5rem]" />
 			</button>
-			<button aria-label={i18n(I18nKey.systemMode)} class="flex-1 btn-plain scale-animation rounded-lg h-11 active:scale-95"
-					class:current-theme-btn={mode === AUTO_MODE}
-					onclick={() => switchTheme(AUTO_MODE)}>
-				<Icon icon="material-symbols:radio-button-partial-outline" class="text-[1.5rem]"></Icon>
+			<button
+				aria-label={i18n(I18nKey.systemMode)}
+				class="flex-1 btn-plain scale-animation rounded-lg h-11 active:scale-95"
+				class:current-theme-btn={mode === AUTO_MODE}
+				onclick={() => switchTheme(AUTO_MODE)}
+			>
+				<Icon icon="material-symbols:radio-button-partial-outline" class="text-[1.5rem]" />
 			</button>
 		</div>
-		
-		<!-- Theme Color -->
-		<div class="flex flex-row gap-2 mb-3 items-center justify-between pt-2 border-t border-black/10 dark:border-white/15">
+
+		<div
+			class="flex flex-row gap-2 mb-3 items-center justify-between pt-2 border-t border-black/10 dark:border-white/15"
+		>
 			<div class="flex items-center gap-2 font-medium text-neutral-700 dark:text-neutral-300">
 				{i18n(I18nKey.themeColor)}
-				<button aria-label="Reset to Default" class="btn-regular w-7 h-7 rounded-md active:scale-90 will-change-transform"
-						class:opacity-0={hue === defaultHue} class:pointer-events-none={hue === defaultHue} onclick={resetHue}>
+				<button
+					aria-label="Reset to Default"
+					class="setting-reset-btn {hue === defaultHue ? 'hidden' : ''}"
+					onclick={resetHue}
+				>
 					<div class="text-[var(--btn-content)]">
-						<Icon icon="fa6-solid:arrow-rotate-left" class="text-[0.875rem]"></Icon>
+						<Icon icon="fa6-solid:arrow-rotate-left" class="text-[0.875rem]" />
 					</div>
 				</button>
 			</div>
-			<div class="flex gap-1">
-				<div id="hueValue" class="transition bg-[var(--btn-regular-bg)] w-10 h-7 rounded-md flex justify-center
-				font-bold text-sm items-center text-[var(--btn-content)]">
-					{hue}
-				</div>
-			</div>
+			<ValueBadge value={hue} />
 		</div>
-		<div class="w-full h-6 px-1 bg-[oklch(0.80_0.10_0)] dark:bg-[oklch(0.70_0.10_0)] rounded select-none">
-			<input aria-label={i18n(I18nKey.themeColor)} type="range" min="0" max="360" bind:value={hue}
-				   class="slider" id="colorSlider" step="5" style="width: 100%">
+
+		<div class="slider-color mb-2">
+			<input
+				aria-label={i18n(I18nKey.themeColor)}
+				type="range"
+				min="0"
+				max="360"
+				bind:value={hue}
+				class="slider-base slider-color w-full"
+				step="5"
+			/>
 		</div>
 	</div>
 
-	<!-- Background Settings Section -->
-	<div class="flex flex-row gap-2 mb-3 items-center justify-between">
-		<div class="flex gap-2 font-bold text-lg text-neutral-900 dark:text-neutral-100 transition relative ml-3
-			before:w-1 before:h-4 before:rounded-md before:bg-[var(--primary)]
-			before:absolute before:-left-3 before:top-[0.33rem]">
-			背景设置
-		</div>
-	</div>
-	
+	<SettingSection title="背景设置" />
+
 	<div class="card-base p-3 mb-4">
 		<div class="flex items-center justify-between py-2">
 			<div class="flex items-center gap-2">
-				<button aria-label="Toggle Background Settings" class="btn-plain w-6 h-6 rounded-md active:scale-90 transition-transform" onclick={() => backgroundSettingsExpanded = !backgroundSettingsExpanded}>
-					<Icon icon="material-symbols:chevron-right" class="text-[1.25rem] transition-transform" style="transform: rotate({backgroundSettingsExpanded ? 90 : 0}deg)"></Icon>
+				<button
+					aria-label="Toggle Background Settings"
+					class="btn-plain w-6 h-6 rounded-md active:scale-90 transition-transform"
+					onclick={() => (backgroundSettingsExpanded = !backgroundSettingsExpanded)}
+				>
+					<Icon
+						icon="material-symbols:chevron-right"
+						class="setting-chevron {backgroundSettingsExpanded ? 'expanded' : ''}"
+					/>
 				</button>
 				<span class="font-medium text-neutral-700 dark:text-neutral-300">启用背景图片</span>
 			</div>
-			<button 
-				aria-label="Toggle Background"
-				class="relative w-12 h-6 rounded-full transition-colors duration-200 ease-in-out"
-				class:bg-[var(--primary)]={backgroundEnabled}
-				class:bg-[var(--btn-regular-bg)]={!backgroundEnabled}
-				onclick={(e) => { e.stopPropagation(); toggleBackground(); }}
-			>
-				<span 
-					class="absolute left-1 top-1 w-4 h-4 rounded-full bg-white transition-transform duration-200 ease-in-out"
-					class:translate-x-6={backgroundEnabled}
-				></span>
-			</button>
-		</div>
-		
-		{#if backgroundSettingsExpanded}
-		<div class="space-y-2 pt-3">
-			<div class="flex justify-between text-sm items-center">
-				<div class="flex items-center gap-2">
-					<span class="text-neutral-600 dark:text-neutral-400">模糊强度</span>
-					<button aria-label="Reset Blur" class="btn-regular w-7 h-7 rounded-md active:scale-90 will-change-transform"
-							class:opacity-0={backgroundBlur === 10} class:pointer-events-none={backgroundBlur === 10} onclick={resetBackgroundBlur}>
-						<div class="text-[var(--btn-content)]">
-							<Icon icon="fa6-solid:arrow-rotate-left" class="text-[0.875rem]"></Icon>
-						</div>
-					</button>
-				</div>
-				<div id="blurValue" class="transition bg-[var(--btn-regular-bg)] w-10 h-7 rounded-md flex justify-center
-				font-bold text-sm items-center text-[var(--btn-content)]">
-					{backgroundBlur}px
-				</div>
-			</div>
-			<input 
-				aria-label="Background Blur"
-				type="range" 
-				min="0" 
-				max="20" 
-				bind:value={backgroundBlur}
-				oninput={updateBackgroundBlur}
-				class="w-full h-2 bg-[var(--btn-regular-bg)] rounded-lg appearance-none cursor-pointer"
-				disabled={!backgroundEnabled}
+
+			<ToggleSwitch
+				checked={backgroundEnabled}
+				onToggle={toggleBackground}
+				ariaLabel="Toggle Background"
 			/>
 		</div>
-		{/if}
-	</div>
 
-	<!-- Card Opacity Settings Section -->
-	<div class="flex flex-row gap-2 mb-3 items-center justify-between">
-		<div class="flex gap-2 font-bold text-lg text-neutral-900 dark:text-neutral-100 transition relative ml-3
-			before:w-1 before:h-4 before:rounded-md before:bg-[var(--primary)]
-			before:absolute before:-left-3 before:top-[0.33rem]">
-			卡片设置
+		<div class="setting-expand-wrapper">
+			<div class="setting-expand-content {backgroundSettingsExpanded ? 'expanded' : ''}">
+				<div class="flex justify-between text-sm items-center mb-2">
+					<div class="flex items-center gap-2">
+						<span class="text-neutral-600 dark:text-neutral-400">模糊强度</span>
+						<button
+							aria-label="Reset Blur"
+							class="setting-reset-btn {backgroundBlur === 10 ? 'hidden' : ''}"
+							onclick={resetBackgroundBlur}
+						>
+							<div class="text-[var(--btn-content)]">
+								<Icon icon="fa6-solid:arrow-rotate-left" class="text-[0.875rem]" />
+							</div>
+						</button>
+					</div>
+					<ValueBadge value="{backgroundBlur}px" />
+				</div>
+				<input
+					aria-label="Background Blur"
+					type="range"
+					min="0"
+					max="20"
+					value={backgroundBlur}
+					oninput={(e) => updateBackgroundBlur(Number((e.target as HTMLInputElement).value))}
+					class="slider-base slider-default"
+					disabled={!backgroundEnabled}
+				/>
+			</div>
 		</div>
 	</div>
-	
+
+	<SettingSection title="卡片设置" />
+
 	<div class="card-base p-3 mb-4">
 		<div class="flex items-center justify-between py-2">
 			<div class="flex items-center gap-2">
-				<button aria-label="Toggle Card Opacity Settings" class="btn-plain w-6 h-6 rounded-md active:scale-90 transition-transform" onclick={() => cardOpacitySettingsExpanded = !cardOpacitySettingsExpanded}>
-					<Icon icon="material-symbols:chevron-right" class="text-[1.25rem] transition-transform" style="transform: rotate({cardOpacitySettingsExpanded ? 90 : 0}deg)"></Icon>
+				<button
+					aria-label="Toggle Card Opacity Settings"
+					class="btn-plain w-6 h-6 rounded-md active:scale-90 transition-transform"
+					onclick={() => (cardOpacitySettingsExpanded = !cardOpacitySettingsExpanded)}
+				>
+					<Icon
+						icon="material-symbols:chevron-right"
+						class="setting-chevron {cardOpacitySettingsExpanded ? 'expanded' : ''}"
+					/>
 				</button>
 				<span class="font-medium text-neutral-700 dark:text-neutral-300">启用卡片不透明度</span>
 			</div>
-			<button 
-				aria-label="Toggle Card Opacity"
-				class="relative w-12 h-6 rounded-full transition-colors duration-200 ease-in-out"
-				class:bg-[var(--primary)]={cardOpacityEnabled}
-				class:bg-[var(--btn-regular-bg)]={!cardOpacityEnabled}
-				onclick={(e) => { e.stopPropagation(); toggleCardOpacity(); }}
-			>
-				<span 
-					class="absolute left-1 top-1 w-4 h-4 rounded-full bg-white transition-transform duration-200 ease-in-out"
-					class:translate-x-6={cardOpacityEnabled}
-				></span>
-			</button>
+
+			<ToggleSwitch
+				checked={cardOpacityEnabled}
+				onToggle={toggleCardOpacity}
+				ariaLabel="Toggle Card Opacity"
+			/>
 		</div>
-		
-		{#if cardOpacitySettingsExpanded}
-		<div class="space-y-3 pt-3">
-			<div class="space-y-2">
-				<div class="flex justify-between text-sm items-center">
-					<div class="flex items-center gap-2">
-						<span class="text-neutral-600 dark:text-neutral-400">亮色模式不透明度</span>
-						<button aria-label="Reset Light Opacity" class="btn-regular w-6 h-6 rounded-md active:scale-90 will-change-transform transition-opacity"
-								class:opacity-0={cardOpacityLight === 65 || !cardOpacityEnabled} class:pointer-events-none={cardOpacityLight === 65 || !cardOpacityEnabled} onclick={resetCardOpacityLight}>
-							<div class="text-[var(--btn-content)]">
-								<Icon icon="fa6-solid:arrow-rotate-left" class="text-[0.75rem]"></Icon>
+
+		<div class="setting-expand-wrapper">
+			<div class="setting-expand-content {cardOpacitySettingsExpanded ? 'expanded' : ''}">
+				<div class="space-y-4">
+					<div>
+						<div class="flex justify-between text-sm items-center mb-2">
+							<div class="flex items-center gap-2">
+								<span class="text-neutral-600 dark:text-neutral-400">亮色模式不透明度</span>
+								<button
+									aria-label="Reset Light Opacity"
+									class="setting-reset-btn small {cardOpacityLight === 65 || !cardOpacityEnabled ? 'hidden' : ''}"
+									onclick={resetCardOpacityLight}
+								>
+									<div class="text-[var(--btn-content)]">
+										<Icon icon="fa6-solid:arrow-rotate-left" class="text-[0.75rem]" />
+									</div>
+								</button>
 							</div>
-						</button>
+							<ValueBadge value="{cardOpacityLight}%" />
+						</div>
+						<input
+							aria-label="Card Opacity Light"
+							type="range"
+							min="0"
+							max="100"
+							value={cardOpacityLight}
+							oninput={(e) =>
+								updateCardOpacityLight(Number((e.target as HTMLInputElement).value))}
+							class="slider-base slider-default"
+							disabled={!cardOpacityEnabled}
+						/>
 					</div>
-					<div class="transition bg-[var(--btn-regular-bg)] w-10 h-7 rounded-md flex justify-center
-					font-bold text-sm items-center text-[var(--btn-content)]">
-						{cardOpacityLight}%
+
+					<div>
+						<div class="flex justify-between text-sm items-center mb-2">
+							<div class="flex items-center gap-2">
+								<span class="text-neutral-600 dark:text-neutral-400">暗色模式不透明度</span>
+								<button
+									aria-label="Reset Dark Opacity"
+									class="setting-reset-btn small {cardOpacityDark === 85 || !cardOpacityEnabled ? 'hidden' : ''}"
+									onclick={resetCardOpacityDark}
+								>
+									<div class="text-[var(--btn-content)]">
+										<Icon icon="fa6-solid:arrow-rotate-left" class="text-[0.75rem]" />
+									</div>
+								</button>
+							</div>
+							<ValueBadge value="{cardOpacityDark}%" />
+						</div>
+						<input
+							aria-label="Card Opacity Dark"
+							type="range"
+							min="0"
+							max="100"
+							value={cardOpacityDark}
+							oninput={(e) =>
+								updateCardOpacityDark(Number((e.target as HTMLInputElement).value))}
+							class="slider-base slider-default"
+							disabled={!cardOpacityEnabled}
+						/>
 					</div>
 				</div>
-				<input 
-					aria-label="Card Opacity Light"
-					type="range" 
-					min="0" 
-					max="100" 
-					bind:value={cardOpacityLight}
-					oninput={updateCardOpacityLight}
-					class="w-full h-2 bg-[var(--btn-regular-bg)] rounded-lg appearance-none cursor-pointer"
-					disabled={!cardOpacityEnabled}
-				/>
-			</div>
-			
-			<div class="space-y-2">
-				<div class="flex justify-between text-sm items-center">
-					<div class="flex items-center gap-2">
-						<span class="text-neutral-600 dark:text-neutral-400">暗色模式不透明度</span>
-						<button aria-label="Reset Dark Opacity" class="btn-regular w-6 h-6 rounded-md active:scale-90 will-change-transform transition-opacity"
-								class:opacity-0={cardOpacityDark === 85 || !cardOpacityEnabled} class:pointer-events-none={cardOpacityDark === 85 || !cardOpacityEnabled} onclick={resetCardOpacityDark}>
-							<div class="text-[var(--btn-content)]">
-								<Icon icon="fa6-solid:arrow-rotate-left" class="text-[0.75rem]"></Icon>
-							</div>
-						</button>
-					</div>
-					<div class="transition bg-[var(--btn-regular-bg)] w-10 h-7 rounded-md flex justify-center
-					font-bold text-sm items-center text-[var(--btn-content)]">
-						{cardOpacityDark}%
-					</div>
-				</div>
-				<input 
-					aria-label="Card Opacity Dark"
-					type="range" 
-					min="0" 
-					max="100" 
-					bind:value={cardOpacityDark}
-					oninput={updateCardOpacityDark}
-					class="w-full h-2 bg-[var(--btn-regular-bg)] rounded-lg appearance-none cursor-pointer"
-					disabled={!cardOpacityEnabled}
-				/>
 			</div>
 		</div>
-		{/if}
 	</div>
 </div>
-
-
-<style lang="stylus">
-#display-setting
-  input[type="range"]
-    -webkit-appearance none
-    height 1.5rem
-    background-image var(--color-selection-bar)
-    transition background-image 0.15s ease-in-out
-
-    /* Input Thumb */
-    &::-webkit-slider-thumb
-      -webkit-appearance none
-      height 1rem
-      width 0.5rem
-      border-radius 0.125rem
-      background rgba(255, 255, 255, 0.7)
-      box-shadow none
-      &:hover
-        background rgba(255, 255, 255, 0.8)
-      &:active
-        background rgba(255, 255, 255, 0.6)
-
-    &::-moz-range-thumb
-      -webkit-appearance none
-      height 1rem
-      width 0.5rem
-      border-radius 0.125rem
-      border-width 0
-      background rgba(255, 255, 255, 0.7)
-      box-shadow none
-      &:hover
-        background rgba(255, 255, 255, 0.8)
-      &:active
-        background rgba(255, 255, 255, 0.6)
-
-    &::-ms-thumb
-      -webkit-appearance none
-      height 1rem
-      width 0.5rem
-      border-radius 0.125rem
-      background rgba(255, 255, 255, 0.7)
-      box-shadow none
-      &:hover
-        background rgba(255, 255, 255, 0.8)
-      &:active
-        background rgba(255, 255, 255, 0.6)
-
-</style>
