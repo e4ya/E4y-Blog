@@ -2,7 +2,24 @@
 
 @layer components {
     .card-base {
-        @apply rounded-[var(--radius-large)] overflow-hidden bg-[var(--card-bg)] transition;
+        @apply rounded-[var(--radius-large)] overflow-hidden transition;
+        background-color: var(--card-bg);
+    }
+    
+    /* Dynamic card opacity */
+    :root {
+        --card-bg-light-raw: 255, 255, 255;
+        --card-bg-dark-raw: 0, 0, 0;
+        --card-opacity-light: 0.85;
+        --card-opacity-dark: 0.65;
+    }
+    
+    :root:not(.dark) .card-base {
+        background-color: rgba(var(--card-bg-light-raw), var(--card-opacity-light));
+    }
+    
+    :root.dark .card-base {
+        background-color: rgba(var(--card-bg-dark-raw), var(--card-opacity-dark));
     }
     h1, h2, h3, h4, h5, h6, p, a, span, li, ul, ol, blockquote, code, pre, table, th, td, strong {
         @apply transition;
