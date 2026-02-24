@@ -58,7 +58,7 @@ function switchTheme(newMode: LIGHT_DARK_MODE) {
 }
 
 // Background settings
-let backgroundEnabled = $state(false);
+let backgroundEnabled = $state(true);
 let backgroundBlur = $state(10);
 let backgroundSettingsExpanded = $state(false);
 
