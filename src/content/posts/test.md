@@ -1,7 +1,7 @@
 ---
 title: Hello World！
 published: 2026-02-24
-description: 'A new attempt.'
+description: ''
 image: ''
 tags: [Fuwari]
 category: '代码相关'
