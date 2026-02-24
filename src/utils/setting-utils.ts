@@ -8,12 +8,15 @@ import { expressiveCodeConfig } from "@/config";
 import type { LIGHT_DARK_MODE } from "@/types/config";
 
 export function getDefaultHue(): number {
-	const fallback = "250";
+	const fallback = "315";
 	const configCarrier = document.getElementById("config-carrier");
 	return Number.parseInt(configCarrier?.dataset.hue || fallback, 10);
 }
 
 export function getHue(): number {
+	if (typeof localStorage === "undefined") {
+		return 315;
+	}
 	const stored = localStorage.getItem("hue");
 	return stored ? Number.parseInt(stored, 10) : getDefaultHue();
 }

@@ -35,6 +35,11 @@ export type SiteConfig = {
 		depth: 1 | 2 | 3;
 	};
 
+	background: {
+		enable: boolean;
+		blur: number;
+	};
+
 	favicon: Favicon[];
 };
 

@@ -9,16 +9,16 @@ import { LinkPreset } from "./types/config";
 
 export const siteConfig: SiteConfig = {
 	title: "E4y の Blog",
-	subtitle: "awa",
+	subtitle: "Ciallo～(∠・ω< )⌒★",
 	lang: "zh_CN",
 	themeColor: {
 		hue: 315,
 		fixed: false,
 	},
 	banner: {
-		enable: true,
+		enable: false,
 		src: "assets/images/banner.png",
-		position: "top",
+		position: "center",
 		credit: {
 			enable: false,
 			text: "",
@@ -28,6 +28,10 @@ export const siteConfig: SiteConfig = {
 	toc: {
 		enable: true,
 		depth: 2,
+	},
+	background: {
+		enable: true,
+		blur: 10,
 	},
 	favicon: [
 		{
@@ -44,7 +48,7 @@ export const navBarConfig: NavBarConfig = {
 export const profileConfig: ProfileConfig = {
 	avatar: "assets/images/avatar.png",
 	name: "E4y",
-	bio: "awa",
+	bio: "一个兴趣使然的高中生",
 	links: [
 		{
 			name: "GitHub",

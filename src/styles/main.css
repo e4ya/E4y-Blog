@@ -150,3 +150,20 @@
     }
   }
 }
+
+/* Global background image */
+html::before {
+  content: '';
+  position: fixed;
+  top: -20px;
+  left: -20px;
+  width: calc(100% + 40px);
+  height: calc(100% + 40px);
+  background-image: url('../assets/images/background.png');
+  background-size: cover;
+  background-position: center;
+  filter: blur(var(--background-blur, 10px));
+  -webkit-filter: blur(var(--background-blur, 10px));
+  z-index: -1;
+  display: var(--background-display, block);
+}
