@@ -62,7 +62,7 @@ export const profileConfig: ProfileConfig = {
 		},
 		{
 			name: "QQ 群",
-			icon: "fa6-solid:users",
+			icon: "fa6-brands:qq",
 			url: "https://qm.qq.com/q/hZSA1GYmha",
 		},
 	],
