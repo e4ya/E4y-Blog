@@ -126,8 +126,10 @@ class TableOfContents extends HTMLElement {
              return;
         }
         
-        let top = this.tocEntries[min].offsetTop;
-        let bottom = this.tocEntries[max].offsetTop + this.tocEntries[max].offsetHeight;
+        let parentOffset = this.tocEl?.getBoundingClientRect().top || 0;
+        let scrollOffset = this.tocEl?.scrollTop || 0;
+        let top = this.tocEntries[min].getBoundingClientRect().top - parentOffset + scrollOffset;
+        let bottom = this.tocEntries[max].getBoundingClientRect().bottom - parentOffset + scrollOffset;
         this.activeIndicator?.setAttribute("style", `display: block; top: ${top}px; height: ${bottom - top}px`);
     };
 
