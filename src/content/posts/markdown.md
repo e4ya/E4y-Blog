@@ -1,6 +1,6 @@
 ---
 title: Markdown 语法参考
-published: 2026-02-25
+published: 2026-02-26
 description: '《Nina教你Markdown语法！三分钟极速入门！》视频的配套文稿'
 tags: [Markdown]
 category: '代码相关'
@@ -245,22 +245,26 @@ print("Hello, World!")
 
 ```markdown
 $$
-\because 6－6＝9－9 \\
-3×2－3×2＝3×3－3×3 \\
-2（3－3）＝3（3－3） \\
-\therefore 2=3 \\
-又\because 1+1＝2 \\
-\therefore 1+1=3
+\begin{aligned}
+\because 6-6 &= 9-9 \\
+3\times2 - 3\times2 &= 3\times3 - 3\times3 \\
+2(3-3) &= 3(3-3) \\
+\therefore 2 &= 3 \\
+\text{又}\because 1+1 &= 2 \\
+\therefore 1+1 &= 3
+\end{aligned}
 $$
 ```
 
 $$
-\because 6－6＝9－9 \\
-3×2－3×2＝3×3－3×3 \\
-2（3－3）＝3（3－3） \\
-\therefore 2=3 \\
-又\because 1+1＝2 \\
-\therefore 1+1=3
+\begin{aligned}
+\because 6-6 &= 9-9 \\
+3\times2 - 3\times2 &= 3\times3 - 3\times3 \\
+2(3-3) &= 3(3-3) \\
+\therefore 2 &= 3 \\
+\text{又}\because 1+1 &= 2 \\
+\therefore 1+1 &= 3
+\end{aligned}
 $$
 
 ### 引用（Blockquotes）
