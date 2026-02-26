@@ -5,3 +5,6 @@
 ::github{repo="e4ya/E4y-Blog"}
 
 > 正在尝试魔改ing……
+
+魔改参考：
+::github{repo="afoim/fuwari"}

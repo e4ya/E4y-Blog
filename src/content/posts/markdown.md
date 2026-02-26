@@ -173,15 +173,14 @@ Markdown 使用反斜杠`\`来转义特殊字符。
 ```markdown
 [描述](链接)
 例如: [MyGO_AveMujica](https://space.bilibili.com/1459104794)
+
 ![描述](https://s2.loli.net/2024/06/13/5xyGzfcakNHArV2.jpg)
 例如: ![anon酱](https://s2.loli.net/2024/06/13/5xyGzfcakNHArV2.jpg)
+
 ```
 
-[描述](链接)
 例如: [MyGO_AveMujica](https://space.bilibili.com/1459104794)
-![描述](https://s2.loli.net/2024/06/13/5xyGzfcakNHArV2.jpg)
-例如: ![anon酱](https://s2.loli.net/2024/06/13/5xyGzfcakNHArV2.jpg)
-
+![anon酱](https://s2.loli.net/2024/06/13/5xyGzfcakNHArV2.jpg)
 ### 分割线（Horizontal Rules）
 
 创建分割线。
@@ -190,6 +189,7 @@ Markdown 使用反斜杠`\`来转义特殊字符。
 ***
 * * *
 *****
+---
 - - -
 ----------
 ```
@@ -197,6 +197,7 @@ Markdown 使用反斜杠`\`来转义特殊字符。
 ***
 * * *
 *****
+---
 - - -
 ----------
 
